@@ -142,6 +142,9 @@ int selecionar(int selecao, Graph* graph, string output)
         output_file.close();
         return 0;
     }
+    case 7:
+        graph->AttCandList(graph->getFirstNode());
+    break;
     case 8:
     {
         graph->drawGraph(graph->getFirstNode());
