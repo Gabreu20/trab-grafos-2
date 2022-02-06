@@ -74,26 +74,22 @@ bool Graph::getWeightedEdge()
 
     return this->weighted_edge;
 }
-
 //Function that verifies if the graph is weighted at the nodes
 bool Graph::getWeightedNode()
 {
 
     return this->weighted_node;
 }
-
 Node *Graph::getFirstNode()
 {
 
     return this->first_node;
 }
-
 Node *Graph::getLastNode()
 {
 
     return this->last_node;
 }
-
 Edge *Graph::getFirstEdge()
 {
     return this->first_edge;
@@ -128,6 +124,30 @@ void Graph::imprimir()
                 next_edge = next_edge->getNextEdge();
             }
             cout << endl;
+
+            next_node = next_node->getNextNode();
+        }
+    }
+}
+
+void Graph::imprimirAdjacencia(){
+    cout << endl;
+    if (this->first_node!=nullptr)
+    {
+        Node *next_node = this->first_node;
+
+        while (next_node != nullptr)
+        {
+            cout << "[";
+            cout << next_node->getId();
+            Edge *next_edge = next_node->getFirstEdge();
+
+            while(next_edge != nullptr)
+            {
+                cout << "," << next_edge->getTargetId();
+                next_edge = next_edge->getNextEdge();
+            }
+            cout << "]" << endl;
 
             next_node = next_node->getNextNode();
         }
@@ -321,6 +341,70 @@ Edge *Graph::getEdge(int Source, int target)
         n = n->next_node;
     }
     return nullptr;
+}
+
+//gap calculus
+void Graph::drawGraph(){
+    //colore o primeiro node
+    Node *n = this->getFirstNode();
+    n->color = 1;
+    n->visitado = 1;
+    this->activeColor++;
+
+    //Inicia a lista de adjacencia
+    AttAdjList(n);
+
+    int gap = 1000;
+    //inicializa o maior e o menor como o primeiro node
+    int menor = n->getId(); 
+    int maior = n->getId();
+
+
+    //================ loop ================
+    int choosenNode = 0;
+    int indexEscolhido = 0;
+
+    for(int i = 0; i < (n->getOutDegree() + n->getInDegree()); i++){
+        int aux;
+        if(this->adjVector[adjAux] < menor){
+            aux = maior - this->adjVector[adjAux];
+        }
+        else if(this->adjVector[adjAux] > maior){
+            aux = this->adjVector[adjAux] - menor;
+        }
+        if(aux < 0)
+            aux = aux * (-1); //Não permite gap negativo
+        if(aux <= gap + gap){ //se o novo gap for menor doq 2 * gap anterior, adicionar node ao subno
+            gap = aux;
+            choosenNode = this->adjVector[adjAux];
+            indexEscolhido = i;
+        }
+    }
+    this->adjVector[indexEscolhido] = 99999; //<---------TROCAR
+    this->getNode(choosenNode)->color = activeColor;
+
+    if(choosenNode < menor) //define se o node adicionado é menor do que o menor anterior
+        menor = choosenNode;
+    if(choosenNode > maior) //define se o node adicionado é maior do que o maior anterior
+        maior = choosenNode;
+    AttAdjList(this->getNode(choosenNode));
+
+}
+
+void Graph::AttAdjList(Node *n){
+    Edge *e = n->getFirstEdge();
+    bool podeInserir = true;
+    while(e != nullptr){
+        for(int i = 0; i < 100; i++){
+            if(e->getTargetId() == this->adjVector[i]){
+                podeInserir = false;
+                break;
+            }
+        }
+        if(podeInserir){
+            this->adjVector[adjAux] = e->getTargetId();
+        }
+    }
 }
 
 

@@ -107,8 +107,8 @@ int menu()
 
     int selecao;
 
-    cout << "MENU" << endl;
-    cout << "----" << endl;
+    cout << "============ MENU ============" << endl;
+    cout << "[9] Imprimir Grafo"<< endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -128,6 +128,12 @@ int selecionar(int selecao, Graph* graph, string output)
     {
         output_file.close();
         return 0;
+    }
+    case 8:
+    {
+        graph->drawGraph();
+        
+        break;
     }
     case 9:
     {
@@ -157,6 +163,8 @@ int mainMenu(string output_file, Graph* graph)
     }
     return 0;
 }
+
+
 
 int main(int argc, char const *argv[])
 {

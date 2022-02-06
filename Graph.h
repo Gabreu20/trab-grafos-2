@@ -24,6 +24,10 @@ class Graph{
         Node* first_node;
         Node* last_node;
         Edge* first_edge;
+        int activeColor = 0;
+
+        int adjVector[100];
+        int adjAux = 0;
 
     public:
         //Constructor
@@ -50,7 +54,13 @@ class Graph{
         void setFirstEdge(Edge *e);//define o primeiro Edge
         bool contemVetor(int vetor[],int tamanho,int valor);    // confere se um id esta num vetor
 
+        //gap calculus
+        void drawGraph();
+        void AttAdjList(Node *n);
+
+
         void imprimir();//imprime um grafo
+        void imprimirAdjacencia();
         string Saida();
 
     private:

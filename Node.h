@@ -16,7 +16,6 @@ class Node{
 
 
     public:
-        //foi mau pelo vacilo  passei os negocios do privado pro publico
         Edge* first_edge;
         Edge* last_edge;
         int id;
@@ -27,7 +26,6 @@ class Node{
         int visitado = 0;
         int agmVisit = 0;
         Node* next_node;
-
 
 
         // Constructor
@@ -56,6 +54,12 @@ class Node{
         void decrementInDegree();
         Edge* hasEdgeBetween(int target_id);
         // Auxiliar methods
+
+
+        //gap
+        int color = 0;
+        int melhor = 0;
+        int gap = 0;
 
 };
 
