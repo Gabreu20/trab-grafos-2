@@ -19,6 +19,7 @@ class Node{
         Edge* first_edge;
         Edge* last_edge;
         int id;
+        int peso;
         int pai = -1;
         unsigned int in_degree;
         unsigned int out_degree;

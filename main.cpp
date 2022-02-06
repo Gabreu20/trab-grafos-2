@@ -45,7 +45,7 @@ void parOrdenado(string aresta,int *x,int *y){
     converte2>>*y;
 }
 
-Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weightedNode)
+Graph* leitura(ifstream& inputFile, int directed, int weightedEdge, int weightedNode)
 {
 
 
@@ -144,7 +144,7 @@ int selecionar(int selecao, Graph* graph, string output)
     }
     case 8:
     {
-        graph->drawGraph();
+        graph->drawGraph(graph->getFirstNode());
         
         break;
     }

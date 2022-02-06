@@ -26,7 +26,7 @@ class Graph{
         Edge* first_edge;
         int activeColor = 0;
 
-        int adjVector[100];
+        int candidatos[100];
         int adjAux = 0;
 
     public:
@@ -45,7 +45,7 @@ class Graph{
         Edge* getFirstEdge();
 
         //Other methods
-        void insertNode(int id);//insere um v�rtice
+        void insertNode(int id, int peso);//insere um v�rtice
         void insertEdge(int id, int target_id, float weight, int id_edge);//insere uma aresta
         void removeNode(int id);//remove um v�rtice
         bool searchNode(int id);//procura um v�rtice
@@ -55,8 +55,8 @@ class Graph{
         bool contemVetor(int vetor[],int tamanho,int valor);    // confere se um id esta num vetor
 
         //gap calculus
-        void drawGraph();
-        void AttAdjList(Node *n);
+        void drawGraph(Node *n);
+        void AttCandList(Node *n);
 
 
         void imprimir();//imprime um grafo
