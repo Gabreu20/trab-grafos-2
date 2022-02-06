@@ -10,97 +10,110 @@
 #include "Graph.h"
 #include "Node.h"
 #include <limits>
+#include <sstream>
 using namespace std;
+
+void parOrdenado(string aresta,int *x,int *y){
+    int i=1;
+    char aux1[8];
+    char aux2[8];
+
+    aux1[0]=aresta[i];
+    while(true){
+        if(aresta[i+1]==',')
+            break;
+        else{
+            aux1[i]=aresta[i+1];
+            i++;
+        }
+    }
+    stringstream converte1(aux1);
+    converte1>>*x;
+
+    i=i+2;
+    int j=0;
+    while(true){
+        if(aresta[i]==')')
+            break;
+        else{
+            aux2[j]=aresta[i];
+            i++;
+            j++;
+        }
+    }
+    stringstream converte2(aux2);
+    converte2>>*y;
+}
 
 Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weightedNode)
 {
 
-    //Vari�veis para auxiliar na cria��o dos n�s no Grafo
+
+//Variáveis para auxiliar na criação dos nós no Grafo
     int idNodeSource;
     int idNodeTarget;
     int order;
+    int numEdges;
+    int clusters;
+    string palavra;
 
-    //Pegando a ordem do grafo
-    input_file >> order;
-
+    while(inputFile >> palavra){
+        if(palavra=="p"){
+            inputFile>> palavra;
+            inputFile>> clusters;
+            cout <<"cluster:" <<clusters << endl;
+            inputFile>> palavra;
+            inputFile>> palavra;
+            inputFile>> order;
+            cout <<"nodes:"<< order << endl;
+            break;
+        }
+    }
+    numEdges=order*(order-1)/3;
     //Criando objeto grafo
     Graph* graph = new Graph(order, directed, weightedEdge, weightedNode);
 
+
+
+    while(inputFile >> palavra){
+        int x;
+        int y;
+        if(palavra=="w"){
+
+            inputFile>> palavra;
+            for(int i=0;i<order;i++){;
+                inputFile>> x;
+                inputFile>> y;
+                graph->insertNode(x,y);
+            }
+            break;
+        }
+    }
+
+
     //Leitura de arquivo
-
-    int edge_id = 1;
-    if(!graph->getWeightedEdge() && !graph->getWeightedNode())
-    {
-        for(int i=0; i<order; i++)
-        {
-            graph->insertNode(i);
-        }
-        while(input_file >> idNodeSource >> idNodeTarget)
-        {
-            graph->insertEdge(idNodeSource, idNodeTarget, 1, edge_id);
-            edge_id++;
-        }
-
+    while(inputFile >> palavra){
+        if(palavra=="E"){
+            inputFile>> palavra;
+            int x,y;
+            while(true){
+                inputFile>> palavra;
+                if(palavra==";")
+                    break;
+                parOrdenado(palavra,&x,&y);
+                graph->insertEdge(x,y,0,graph->getNumberEdges());
+            }
+            break;
+          }
     }
-    else if(graph->getWeightedEdge() && !graph->getWeightedNode() )
-    {
+    graph->imprimir();
 
-        float edgeWeight;
-        for(int i=0; i<order; i++)
-        {
-            graph->insertNode(i);
-        }
-
-        while(input_file >> idNodeSource >> idNodeTarget >> edgeWeight)
-        {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight, edge_id);
-            edge_id++;
-        }
-
-    }
-    else if(graph->getWeightedNode() && !graph->getWeightedEdge())
-    {
-
-        for(int i=0; i<order; i++)
-        {
-            graph->insertNode(i);
-        }
-        float nodeSourceWeight, nodeTargetWeight;
-
-        while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight)
-        {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, 1, edge_id);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-            edge_id++;
-        }
-
-    }
-    else if(graph->getWeightedNode() && graph->getWeightedEdge())
-    {
-        for(int i=0; i<order; i++)
-        {
-            graph->insertNode(i);
-        }
-        float nodeSourceWeight, nodeTargetWeight, edgeWeight;
-
-        while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight)
-        {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight, edge_id);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-            edge_id++;
-        }
-
-    }
 
     graph->setFirstEdge(graph->getFirstNode()->getFirstEdge());
 
     return graph;
 }
+
 
 int menu()
 {

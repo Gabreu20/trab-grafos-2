@@ -109,20 +109,17 @@ void Graph::imprimir()
 
         while (next_node != nullptr)
         {
-            cout << "(";
-            cout << next_node->getInDegree();
-            cout << ") ";
             cout << next_node->getId();
-            cout << " (";
-            cout << next_node->getOutDegree();
-            cout << ")";
+            cout << "-"<<next_node->peso;
             Edge *next_edge = next_node->getFirstEdge();
+
 
             while(next_edge != nullptr)
             {
                 cout << " -> " << next_edge->getTargetId();
                 next_edge = next_edge->getNextEdge();
             }
+
             cout << endl;
 
             next_node = next_node->getNextNode();
@@ -189,13 +186,14 @@ void Graph::addNode(Node *Id)//adiciona a um grafo a copia de um no, com todoas 
 }
 
 
-void Graph::insertNode(int id)
+void Graph::insertNode(int id,int peso)
 {
     if (this->first_node==nullptr)
     {
         Node *p = new Node(id);
         this->first_node= p;
         this->last_node=p;
+        p->peso=peso;
     }
     else
     {
@@ -203,6 +201,7 @@ void Graph::insertNode(int id)
         Node *p = new Node(id);
         aux->setNextNode(p);
         this->last_node=p;
+        p->peso=peso;
     }
 }
 
