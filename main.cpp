@@ -142,12 +142,9 @@ int selecionar(int selecao, Graph* graph, string output)
         output_file.close();
         return 0;
     }
-    case 7:
-        graph->AttCandList(graph->getFirstNode());
-    break;
     case 8:
     {
-        graph->drawGraph(graph->getFirstNode());
+        graph->drawGraph();
         
         break;
     }
@@ -200,35 +197,35 @@ int main(int argc, char const *argv[])
     string program_name(argv[0]);
     string input_file_name(argv[1]);
 
-    string instance;
-    if(input_file_name.find("v") <= input_file_name.size())
-    {
-        string instance = input_file_name.substr(input_file_name.find("v"));
-        cout << "Running " << program_name << " with instance " << instance << " ... " << endl;
+        string instance;
+        if(input_file_name.find("v") <= input_file_name.size())
+        {
+            string instance = input_file_name.substr(input_file_name.find("v"));
+            cout << "Running " << program_name << " with instance " << instance << " ... " << endl;
+        }
+
+        //Abrindo arquivo de entrada
+        ifstream input_file;
+
+        input_file.open(argv[1], ios::in);
+
+        Graph* graph;
+
+        if(input_file.is_open())
+        {
+
+            graph = leitura(input_file, atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+
+        }
+        else
+            cout << "Unable to open " << argv[1];
+
+        mainMenu(argv[2], graph);
+
+
+
+        //Fechando arquivo de entrada
+        input_file.close();
+
+        return 0;
     }
-
-    //Abrindo arquivo de entrada
-    ifstream input_file;
-
-    input_file.open(argv[1], ios::in);
-
-    Graph* graph;
-
-    if(input_file.is_open())
-    {
-
-        graph = leitura(input_file, atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
-
-    }
-    else
-        cout << "Unable to open " << argv[1];
-
-    mainMenu(argv[2], graph);
-
-
-
-    //Fechando arquivo de entrada
-    input_file.close();
-
-    return 0;
-}

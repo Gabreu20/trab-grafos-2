@@ -29,7 +29,6 @@ class Graph{
         int candidatos[100];
         int quantidade=0;
         int adjAux = 0;
-        int vezes = 3;
 
     public:
         //Constructor
@@ -59,11 +58,7 @@ class Graph{
         //gap calculus
         void drawGraph(Node *n);
         void AttCandList(Node *n);
-<<<<<<< HEAD
         void drawGraph();
-=======
-        void removeDoVetor(int vetor[],int id);
->>>>>>> d8a1c383c377e4a2fca11b5d5f59e702055dfbcc
 
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
