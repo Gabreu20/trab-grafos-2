@@ -27,6 +27,7 @@ class Graph{
         int activeColor = 0;
 
         int candidatos[100];
+        int quantidade=0;
         int adjAux = 0;
 
     public:
@@ -57,14 +58,16 @@ class Graph{
         //gap calculus
         void drawGraph(Node *n);
         void AttCandList(Node *n);
-
+        void drawGraph();
 
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
         string Saida();
 
     private:
+        void removeDoVetor(int vetor[],int id);
         void addNode(Node *Id);
+
         //Auxiliar methods
 
 };
