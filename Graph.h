@@ -59,6 +59,8 @@ class Graph{
         void drawGraph(Node *n);
         void AttCandList(Node *n);
         void drawGraph();
+        void integridade();
+        void somaCores();
 
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();

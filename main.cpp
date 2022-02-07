@@ -142,6 +142,18 @@ int selecionar(int selecao, Graph* graph, string output)
         output_file.close();
         return 0;
     }
+    case 6:
+    {
+        graph->somaCores();
+        
+        break;
+    }
+    case 7:
+    {
+        graph->integridade();
+        
+        break;
+    }
     case 8:
     {
         graph->drawGraph();
