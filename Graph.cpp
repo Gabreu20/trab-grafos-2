@@ -109,8 +109,7 @@ void Graph::imprimir()
 
         while (next_node != nullptr)
         {
-            cout << "COR: " << next_node->color;
-            cout << endl;
+            cout << "COR: " << next_node->color << " ";
             cout << next_node->getId();
             cout << "-" << next_node->peso;
             Edge *next_edge = next_node->getFirstEdge();
@@ -344,14 +343,20 @@ Edge *Graph::getEdge(int Source, int target)
 
 // gap calculus
 void Graph::drawGraph(Node *n)
-{
+{   
+    this->vezes--;
+    //inicializa lista de candidatos
+    for(int i = 0; i < 100; i++){
+        this->candidatos[i] = 0;
+    }
+    this->adjAux = 0;
+
     // colore o primeiro node
     this->activeColor++;
     n->color = activeColor;
 
     // Inicia a lista de adjacencia
     AttCandList(n);
-
     int gap = 1000;
     // inicializa o maior e o menor como o primeiro node
     int menor = n->peso;
@@ -362,85 +367,114 @@ void Graph::drawGraph(Node *n)
     int indexEscolhido = 0;
 
     bool achou = false;
-
+    cout << "sexo" << endl;
     while (true)
     {
-        cout << "a" << endl;
-        for (int i = 0; i < sizeof(this->candidatos); i++)
+        cout << "ue" << endl;
+        for (int i = 0; i < 1; i++) //TROCAR PARAMETRO
         {
-            cout << "b" << endl;
+            cout << "a" << endl;
             int aux;
-            if (getNode(this->candidatos[adjAux])->peso < menor)
+            if (getNode(this->candidatos[i])->peso <= menor)
+            {
+                cout << "b" << endl;
+                aux = maior - getNode(this->candidatos[i])->peso;
+            }
+            else if (getNode(this->candidatos[i])->peso >= maior)
             {
                 cout << "c" << endl;
-                aux = maior - getNode(this->candidatos[adjAux])->peso;
+                aux = getNode(this->candidatos[i])->peso - menor;
             }
-            else if (getNode(this->candidatos[adjAux])->peso > maior)
-            {
+            else if(getNode(this->candidatos[i])->peso < maior && getNode(this->candidatos[i])->peso > menor){
                 cout << "d" << endl;
-                aux = getNode(this->candidatos[adjAux])->peso - menor;
+                aux = maior - menor;
             }
             if (aux < 0)
                 aux = aux * (-1); // Não permite gap negativo
-            if (aux <= gap + gap)
+            if (aux <= gap + 2)
             { // se o novo gap for menor doq 2 * gap anterior, adicionar node ao subno
                 cout << "e" << endl;
                 achou = true;
                 gap = aux;
-                choosenNode = getNode(this->candidatos[adjAux])->peso;
+                choosenNode = this->candidatos[i];
                 indexEscolhido = i;
             }
         }
-        this->candidatos[indexEscolhido] = 99999; //<---------TROCAR
-        this->getNode(choosenNode)->color = activeColor;
+        cout << "f" << endl;
+        if(achou){
+            this->removeDoVetor(this->candidatos, choosenNode);        
+            this->getNode(choosenNode)->color = activeColor;
+        }
 
-
-
+    cout << "g" << endl;
         if (choosenNode < menor) // define se o node adicionado é menor do que o menor anterior
             menor = choosenNode;
         if (choosenNode > maior) // define se o node adicionado é maior do que o maior anterior
             maior = choosenNode;
+
         AttCandList(this->getNode(choosenNode));
-        achou = false;
-        if(!achou){ 
-            break;
+
+        for (int i = 0; i < adjAux; i++)
+        {
+            cout << this->candidatos[i] << " ";
         }
-        else
+        cout << endl
+             << this->adjAux << endl;
+        cout << endl;
+
+        if(!achou)
+            break;
+        else 
             achou = false;
     }
-
-/*
-    if(this->candidatos[0] != 99999) //<-- PRECISA TROCAR
-        drawGraph(this->getNode(this->candidatos[0]));
-        */
+    if(vezes != 0){
+        Node *novo_no = this->getNode(this->candidatos[0]);
+        cout << endl << novo_no->getId() << endl;
+        drawGraph(novo_no);
+    }
 }
 
 void Graph::AttCandList(Node *n)
 {
     Edge *e = n->getFirstEdge();
     bool podeInserir = true;
+    int i = 0;
     while (e != nullptr)
     {
-        cout << e->getTargetId() << endl;
-        for (int i = 0; i < 100; i++)
+        podeInserir = true;
+        if (e->getTargetId() == this->candidatos[i])
         {
-            if (e->getTargetId() == this->candidatos[i])
-            {
-                podeInserir = false;
-                break;
-            }
-            if (this->getNode(e->getTargetId())->color != 0)
-            {
-                podeInserir = false;
-                break;
-            }
+            podeInserir = false;
         }
+        if (this->getNode(e->getTargetId())->color != 0)
+        {
+            podeInserir = false;
+        }
+
         if (podeInserir)
         {
             this->candidatos[adjAux] = e->getTargetId();
+            this->adjAux++;
         }
+        i++;
         e = e->getNextEdge();
     }
+}
+
+void Graph::removeDoVetor(int vetor[],int id)
+{
+    for(int i=0;i<adjAux;i++)
+    {
+        if(vetor[i]==id){
+            i++;
+            while(i<adjAux){
+                vetor[i-1]=vetor[i];
+                i++;
+            }
+            break;
+        }
+    }
+    adjAux--;
 }
 
 string Graph::Saida()
