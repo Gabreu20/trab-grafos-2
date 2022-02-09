@@ -100,6 +100,22 @@ Edge *Graph::getFirstEdge()
     The outdegree attribute of nodes is used as a counter for the number of edges in the graph.
     This allows the correct updating of the numbers of edges in the graph being directed or not.
 */
+void Graph::apaga(){
+    adjAux = 0;
+    quantidade=0;
+    activeColor=0;
+    Node *next_node = this->first_node;
+    while (next_node != nullptr)
+    {
+
+        next_node->color=0;
+        next_node->diferenca=0;
+        next_node = next_node->getNextNode();
+
+    }
+
+}
+
 void Graph::imprimir()
 {
     cout << endl;
@@ -342,11 +358,11 @@ Edge *Graph::getEdge(int Source, int target)
     }
     return nullptr;
 }
-void Graph::removeDoVetor(int vetor[],int id)
+void Graph::removeDoVetor(Node *vetor[],int id)
 {
     for(int i=0;i<quantidade;i++)
     {
-        if(vetor[i]==id){
+        if(vetor[i]->getId()==id){
             i++;
             while(i<quantidade){
                 vetor[i-1]=vetor[i];
@@ -357,32 +373,42 @@ void Graph::removeDoVetor(int vetor[],int id)
     }
     quantidade--;
 }
-void Graph::drawGraph()
+void Graph::ordena(int tamanho,Node *num[]){
+    int prev,next;
+    Node *aux;
+    for(prev=0 ; prev<tamanho-1 ; prev++)
+        for(next=prev+1 ; next<tamanho ; next++){
+            aux=num[prev];
+
+            if(num[next]->diferenca<num[prev]->diferenca){
+                num[prev]=num[next];
+                num[next] = aux;
+            }
+        }
+}
+
+
+void Graph::drawGraph(float alpha)
 {
     Node *nextNode=this->getFirstNode();
     while(nextNode!=nullptr){
         if(nextNode->color==0)
-            drawGraph(nextNode);
+            drawGraph(nextNode,alpha);
         nextNode=nextNode->getNextNode();
     }
 }
 
 
 // gap calculus
-void Graph::drawGraph(Node *n)
+void Graph::drawGraph(Node *n,float alpha)
 {
     quantidade=0;
     // colore o primeiro node
     this->activeColor++;
     n->color = activeColor;
 
-    // Inicia a lista de adjacencia
-    cout << "lista inicial: ";
+    // Inicia a lista de candidatos
     AttCandList(n);
-    for(int i=0;i<quantidade;i++){
-        cout << candidatos[i] << " ";
-    }
-    cout << endl;
 
     if(quantidade==0){
 
@@ -391,7 +417,6 @@ void Graph::drawGraph(Node *n)
         n->color=aux2->color;
         return;
     }
-
 
     // inicializa o maior e o menor como o primeiro node
     int menor = n->peso;
@@ -407,83 +432,149 @@ void Graph::drawGraph(Node *n)
     bool achou = false;
     int p=0;
 
-    int gapTarget=1000;
     int aux;
-    int aux2=500;
     while (p!=1)
     {
-        aux2=500;
-
-
         for (int i = 0; i < quantidade; i++)
         {
-            int pesoDoCandidato=getNode(candidatos[i])->peso;
+            int pesoDoCandidato=candidatos[i]->peso;
 
             if(pesoDoCandidato<maior && pesoDoCandidato > menor)
             {
-                choosenNode=i;
-                break;
+                candidatos[i]->diferenca=0;
             }
             else if(pesoDoCandidato >= maior)
             {
 
                 aux=pesoDoCandidato - menor;
-                if(aux2>aux)
-                {
-                    choosenNode=i;
-                    aux2=aux;
-                }
+                candidatos[i]->diferenca=aux;
 
             }
             else if (pesoDoCandidato < menor)
             {
                 aux= maior - pesoDoCandidato;
-                if(aux2>aux){
-                    choosenNode=i;
-                    aux2=aux;
-                }
-
+                candidatos[i]->diferenca=aux;
             }
         }
 
+        ordena(quantidade,candidatos);
+
         if(primeiroGap==1){
-            valorPrimeiroGap=aux2;
+            valorPrimeiroGap=candidatos[0]->diferenca;
             primeiroGap=0;
         }
-
-        if(valorPrimeiroGap+valorPrimeiroGap < aux2 && primeiroGap==0){ //futura metrica
-            cout << valorPrimeiroGap <<"<" <<aux2;
+        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap){
             break;
         }
-        gapTarget=maior-menor;
-        getNode(candidatos[choosenNode])->color=activeColor;
-        AttCandList(getNode(candidatos[choosenNode]));
 
-        cout << candidatos[choosenNode] <<" - ";
+        candidatos[0]->color=activeColor;
+        AttCandList(candidatos[0]);
 
-        removeDoVetor(candidatos,candidatos[choosenNode]);
+        removeDoVetor(candidatos,candidatos[0]->getId());
 
 
-
-        for(int i=0;i<quantidade;i++){
-            cout << candidatos[i] << " ";
+        if(quantidade<=0){
+            break;
         }
 
-        cout << endl;
-        cin >> p;
-        cout << "tamanho lista candidatos: " << quantidade << "   ";
-        if(quantidade==0)
-            break;
     }
 
-    cout << "tamanho lista candidatos: " << quantidade << endl;
     if(quantidade>0){
-        cout << "->>" <<getNode(candidatos[0])->getId() << endl;
-        drawGraph(getNode(candidatos[0]));
+        drawGraph(candidatos[0],alpha);
     }
 }
 
 
+void Graph::AttCandList(Node *n)
+{
+    Edge *e = n->getFirstEdge();
+    bool podeInserir = true;
+    while (e != nullptr)
+    {
+        if (getNode(e->getTargetId())->color != 0)
+            podeInserir = false;
+        for (int i = 0; i < quantidade; i++){
+                if (e->getTargetId() == this->candidatos[i]->getId())
+                {
+                    podeInserir = false;
+                    break;
+                }
+            }
+
+
+
+        if (podeInserir)
+        {
+            this->candidatos[quantidade] = getNode(e->getTargetId());
+            quantidade++;
+        }
+        podeInserir = true;
+        e = e->getNextEdge();
+    }
+}
+void Graph::somaCores(){
+    int *maiores = new int[activeColor];
+    int *menores = new int[activeColor];
+
+    for(int i=0;i<activeColor;i++)
+    {
+        maiores[i]=-1;
+        menores[i]=-1;
+    }
+
+
+    Node *nextNode=first_node;
+
+    while(nextNode!=nullptr){
+        int CorNo=nextNode->color-1;
+
+        if(maiores[CorNo]==-1)
+            maiores[CorNo]=nextNode->peso;
+        if(menores[CorNo]==-1)
+            menores[CorNo]=nextNode->peso;
+
+        if(nextNode->peso > maiores[CorNo])
+            maiores[CorNo]=nextNode->peso;
+        if(nextNode->peso < menores[CorNo])
+            menores[CorNo]=nextNode->peso;
+
+        nextNode=nextNode->getNextNode();
+    }
+
+    int subtotal=0;
+
+    for(int i=0;i<activeColor;i++)
+    {
+        subtotal=subtotal+maiores[i]-menores[i];
+    }
+    cout << subtotal << " !!" << endl;
+
+    delete maiores;
+    delete menores;
+}
+void Graph::integridade(){
+    int x = this->activeColor ;
+    int* a = new int[x];
+
+    for(int i=0;i<activeColor;i++)
+    {
+        a[i]=0;
+    }
+
+    if (this->first_node != nullptr)
+    {
+        Node *next_node = this->first_node;
+
+        while (next_node != nullptr)
+        {
+            a[(next_node->color) - 1]++;
+            next_node = next_node->getNextNode();
+        }
+    }
+    for(int i = 0; i < x; i++){
+        cout << a[i] << endl;
+    }
+}
 
 string Graph::Saida()
 {

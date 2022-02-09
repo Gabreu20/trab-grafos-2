@@ -11,6 +11,9 @@
 #include "Node.h"
 #include <limits>
 #include <sstream>
+#include <ctime>
+#include <chrono>
+using namespace std::chrono;
 using namespace std;
 
 void parOrdenado(string aresta,int *x,int *y){
@@ -142,10 +145,36 @@ int selecionar(int selecao, Graph* graph, string output)
         output_file.close();
         return 0;
     }
+    case 6:
+        {
+
+
+            break;
+        }
+    case 7:
+        {
+            graph->somaCores();
+            break;
+        }
     case 8:
     {
-        graph->drawGraph();
-        
+        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+
+
+
+        float alpha=0;
+        for(int i=0;i<20000;i++)
+        {
+            graph->drawGraph(alpha);
+            graph->apaga();
+        }
+
+
+
+        high_resolution_clock::time_point fim = high_resolution_clock::now();
+        double tempo = duration_cast<duration<double>>(fim - inicio).count();
+
+        cout << endl <<  tempo << endl;
         break;
     }
     case 9:
@@ -176,7 +205,6 @@ int mainMenu(string output_file, Graph* graph)
     }
     return 0;
 }
-
 
 
 int main(int argc, char const *argv[])

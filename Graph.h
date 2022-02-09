@@ -26,7 +26,7 @@ class Graph{
         Edge* first_edge;
         int activeColor = 0;
 
-        int candidatos[100];
+        Node* candidatos[1000];
         int quantidade=0;
         int adjAux = 0;
 
@@ -54,19 +54,22 @@ class Graph{
         Edge* getEdge(int Source, int target);//retorna uma aresta(id)
         void setFirstEdge(Edge *e);//define o primeiro Edge
         bool contemVetor(int vetor[],int tamanho,int valor);    // confere se um id esta num vetor
+        void apaga();
 
         //gap calculus
-        void drawGraph(Node *n);
+        void drawGraph(Node *n,float alpha);
         void AttCandList(Node *n);
-        void drawGraph();
-
+        void drawGraph(float alpha);
+        void somaCores();
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
         string Saida();
 
     private:
-        void removeDoVetor(int vetor[],int id);
+        void ordena(int tamanho,Node *num[]);
+        void removeDoVetor(Node *vetor[],int id);
         void addNode(Node *Id);
+        void integridade();
 
         //Auxiliar methods
 

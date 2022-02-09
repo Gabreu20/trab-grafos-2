@@ -19,6 +19,7 @@ class Node{
         Edge* first_edge;
         Edge* last_edge;
         int id;
+        int diferenca;
         int peso;
         int pai = -1;
         unsigned int in_degree;
@@ -65,3 +66,4 @@ class Node{
 };
 
 #endif // NODE_H_INCLUDED
+
