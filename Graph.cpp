@@ -584,7 +584,7 @@ void Graph::integridade(){
     }
 }
 
-void Graph::randReativo(float alphas[], int probabilidade){
+void Graph::randReativo(float alphas[], float probabilidade[]){
     Node *nextNode=this->getFirstNode();
     while(nextNode!=nullptr){
         if(nextNode->color==0)
@@ -592,7 +592,7 @@ void Graph::randReativo(float alphas[], int probabilidade){
         nextNode=nextNode->getNextNode();
     }
 }
-void Graph::auxRandReativo(Node *n, float alphas[], int probabilidade){
+void Graph::auxRandReativo(Node *n, float alphas[], float probabilidade[]){
 
     quantidade=0;
     // colore o primeiro node
@@ -649,22 +649,35 @@ void Graph::auxRandReativo(Node *n, float alphas[], int probabilidade){
             }
         }
 
-/*
+
         ordena(quantidade,candidatos);
 
-        escolhido=alpha*quantidade;
-*/
 
-        int a;
-        a = rand() % 10;
+        int a; // define um valor aleatorio entre 0 e 99 para definir qual alpha usar
+        a = rand() % 100;
+        int alphaEscolhido = 0;
+        for(int i = 0; i < 10; i++){
+            if(i > 0){
+                if(probabilidade[i] > a && probabilidade[i - 1] < a){
+                    alphaEscolhido = i;
+                    break;
+                }
+            }
+            else{
+                if(probabilidade[i] > a && a >= 0){
+                    alphaEscolhido = i;
+                    break;
+                }
+            }
+        }
 
-        escolhido = alphas[a] * quantidade;
+        escolhido = alphas[alphaEscolhido] * quantidade;
 
-
+        
         if(escolhido!=0){
             escolhido=rand() % escolhido;
         }
-        //cout << candidatos[escolhido]->id << endl;
+        cout << candidatos[escolhido]->id << endl;
 
         if(primeiroGap==1){
             valorPrimeiroGap=candidatos[0]->diferenca;

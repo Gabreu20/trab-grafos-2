@@ -64,8 +64,8 @@ class Graph{
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
         void Saida(string saida);
-        void randReativo(float alphas[], int probabilidade);
-        void auxRandReativo(Node *n, float alphas[], int probabilidade);
+        void randReativo(float alphas[], float probabilidade[]);
+        void auxRandReativo(Node *n, float alphas[], float probabilidade[]);
 
     private:
         void ordena(int tamanho,Node *num[]);

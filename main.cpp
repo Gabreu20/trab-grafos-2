@@ -213,17 +213,24 @@ int selecionar(int selecao, Graph* graph, string output)
             if(i == 0)
                 alphas[i] = 0.05;
             else
-                alphas[i] = alphas[i] + 0.05;
+                alphas[i] = alphas[i-1] + 0.05;
         }
         float medias[10];
         int menores[10];
+        float probabilidade[10];
+        for(int i = 0; i < 10; i++){
+            if(i == 0)
+                probabilidade[i] = 10;
+            else
+                probabilidade[i] = probabilidade[i-1] + 10;
+        }
 
         for(int i = 0; i < 120; i++){
             if(i % 100 == 0){
                 //atualiza probabilidade
             }
             else{
-                graph->randReativo(alphas, 0);
+                graph->randReativo(alphas, probabilidade);
             }
         }
 
