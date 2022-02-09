@@ -423,7 +423,7 @@ void Graph::drawGraph(Node *n,float alpha)
     int maior = n->peso;
 
     //================ loop ================
-    int choosenNode = 0;
+    int escolhido = 0;
     int indexEscolhido = 0;
 
     int primeiroGap=1;
@@ -458,19 +458,26 @@ void Graph::drawGraph(Node *n,float alpha)
         }
 
         ordena(quantidade,candidatos);
+        escolhido=alpha*quantidade;
+
+
+        if(escolhido!=0){
+            escolhido=rand() % escolhido;
+        }
+        //cout << candidatos[escolhido]->id << endl;
 
         if(primeiroGap==1){
             valorPrimeiroGap=candidatos[0]->diferenca;
             primeiroGap=0;
         }
-        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap){
+        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap/2){
             break;
         }
 
-        candidatos[0]->color=activeColor;
-        AttCandList(candidatos[0]);
+        candidatos[escolhido]->color=activeColor;
+        AttCandList(candidatos[escolhido]);
 
-        removeDoVetor(candidatos,candidatos[0]->getId());
+        removeDoVetor(candidatos,candidatos[escolhido]->getId());
 
 
         if(quantidade<=0){
@@ -483,7 +490,6 @@ void Graph::drawGraph(Node *n,float alpha)
         drawGraph(candidatos[0],alpha);
     }
 }
-
 
 void Graph::AttCandList(Node *n)
 {
@@ -512,7 +518,7 @@ void Graph::AttCandList(Node *n)
         e = e->getNextEdge();
     }
 }
-void Graph::somaCores(){
+int Graph::somaCores(){
     int *maiores = new int[activeColor];
     int *menores = new int[activeColor];
 
@@ -547,69 +553,25 @@ void Graph::somaCores(){
     {
         subtotal=subtotal+maiores[i]-menores[i];
     }
-    cout << subtotal << " !!" << endl;
+    //cout << subtotal << " !!" << endl;
 
     delete maiores;
     delete menores;
+
+    return subtotal;
 }
 void Graph::integridade(){
     int x = this->activeColor ;
     int* a = new int[x];
 
-<<<<<<< HEAD
     for(int i=0;i<activeColor;i++)
     {
         a[i]=0;
     }
-=======
-void Graph::AttCandList(Node *n)
-{
-    Edge *e = n->getFirstEdge();
-    bool podeInserir = true;
-    while (e != nullptr)
-    {
-        if (getNode(e->getTargetId())->color != 0)
-            podeInserir = false;
-        for (int i = 0; i < quantidade; i++){
-                if (e->getTargetId() == this->candidatos[i])
-                {
-                    podeInserir = false;
-                    break;
-                }
-            }
-
-
-
-        if (podeInserir)
-        {
-            this->candidatos[quantidade] = e->getTargetId();
-            quantidade++;
-        }
-        podeInserir = true;
-        e = e->getNextEdge();
-    }
-}
-
-void Graph::integridade(){
-    int x = this->activeColor - 1;
-    int* a = new int[x];
->>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
 
     if (this->first_node != nullptr)
     {
         Node *next_node = this->first_node;
-<<<<<<< HEAD
-
-        while (next_node != nullptr)
-        {
-            a[(next_node->color) - 1]++;
-            next_node = next_node->getNextNode();
-        }
-    }
-    for(int i = 0; i < x; i++){
-        cout << a[i] << endl;
-    }
-=======
 
         while (next_node != nullptr)
         {
@@ -622,89 +584,137 @@ void Graph::integridade(){
     }
 }
 
-void Graph::somaCores(){
-    cout << endl << activeColor;
-    int *maiores = new int[activeColor];
-    int *menores = new int[activeColor];
-
-    for(int i=0;i<activeColor;i++)
-    {
-        maiores[i]=-1;
-        menores[i]=-1;
-    }
-
-
-    Node *nextNode=first_node;
-
+void Graph::randReativo(float alphas[], int probabilidade){
+    Node *nextNode=this->getFirstNode();
     while(nextNode!=nullptr){
-        int CorNo=nextNode->color-1;
-
-        if(maiores[CorNo]==-1)
-            maiores[CorNo]=nextNode->peso;
-        if(menores[CorNo]==-1)
-            menores[CorNo]=nextNode->peso;
-
-        if(nextNode->peso > maiores[CorNo])
-            maiores[CorNo]=nextNode->peso;
-        if(nextNode->peso < menores[CorNo])
-            menores[CorNo]=nextNode->peso;
-
+        if(nextNode->color==0)
+            auxRandReativo(nextNode, alphas, probabilidade);
         nextNode=nextNode->getNextNode();
     }
+}
+void Graph::auxRandReativo(Node *n, float alphas[], int probabilidade){
 
-    int subtotal=0;
+    quantidade=0;
+    // colore o primeiro node
+    this->activeColor++;
+    n->color = activeColor;
 
-    for(int i=0;i<activeColor;i++)
-    {
-        subtotal=subtotal+maiores[i]-menores[i];
+    // Inicia a lista de candidatos
+    AttCandList(n);
+
+    if(quantidade==0){
+
+        Edge *aux=n->getFirstEdge();
+        Node *aux2=getNode(aux->getTargetId());
+        n->color=aux2->color;
+        return;
     }
-    cout << subtotal << " !!" << endl;
->>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
+
+    // inicializa o maior e o menor como o primeiro node
+    int menor = n->peso;
+    int maior = n->peso;
+
+    //================ loop ================
+    int escolhido = 0;
+    int indexEscolhido = 0;
+
+    int primeiroGap=1;
+    int valorPrimeiroGap=0;
+
+    bool achou = false;
+    int p=0;
+
+    int aux;
+    while (p!=1)
+    {
+        for (int i = 0; i < quantidade; i++)
+        {
+            int pesoDoCandidato=candidatos[i]->peso;
+
+            if(pesoDoCandidato<maior && pesoDoCandidato > menor)
+            {
+                candidatos[i]->diferenca=0;
+            }
+            else if(pesoDoCandidato >= maior)
+            {
+
+                aux=pesoDoCandidato - menor;
+                candidatos[i]->diferenca=aux;
+
+            }
+            else if (pesoDoCandidato < menor)
+            {
+                aux= maior - pesoDoCandidato;
+                candidatos[i]->diferenca=aux;
+            }
+        }
+
+/*
+        ordena(quantidade,candidatos);
+
+        escolhido=alpha*quantidade;
+*/
+
+        int a;
+        a = rand() % 10;
+
+        escolhido = alphas[a] * quantidade;
+
+
+        if(escolhido!=0){
+            escolhido=rand() % escolhido;
+        }
+        //cout << candidatos[escolhido]->id << endl;
+
+        if(primeiroGap==1){
+            valorPrimeiroGap=candidatos[0]->diferenca;
+            primeiroGap=0;
+        }
+        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap/2){
+            break;
+        }
+
+        candidatos[escolhido]->color=activeColor;
+        AttCandList(candidatos[escolhido]);
+
+        removeDoVetor(candidatos,candidatos[escolhido]->getId());
+
+
+        if(quantidade<=0){
+            break;
+        }
+
+    }
+
+    if(quantidade>0){
+        auxRandReativo(candidatos[0],alphas, probabilidade);
+    }
 }
 
-string Graph::Saida()
-{
-    string GraphTxt;
-    if (directed == 0)
-    {
-        GraphTxt = GraphTxt + "strict graph {" + '\n';
 
-        Node *next_node = first_node;
+void Graph::Saida(string saida){
+    ofstream sair(saida);
+    if (this->first_node != nullptr)
+    {
+        Node *next_node = this->first_node;
+
         while (next_node != nullptr)
         {
+            sair << "COR: " << next_node->color << " ";
+            sair << next_node->getId();
+            sair << "-" << next_node->peso;
             Edge *next_edge = next_node->getFirstEdge();
+
             while (next_edge != nullptr)
             {
-                GraphTxt = GraphTxt + to_string(next_node->getId()) + "--" + to_string(next_edge->getTargetId()) + ";" + '\n';
+                sair << " -> " << next_edge->getTargetId();
                 next_edge = next_edge->getNextEdge();
             }
+
+            sair << endl;
+
             next_node = next_node->getNextNode();
         }
-
-        GraphTxt = GraphTxt + '}';
-
-        return GraphTxt;
     }
 
-    if (directed == 1)
-    {
-        GraphTxt = GraphTxt + "Digraph saida {" + '\n';
-
-        Node *next_node = first_node;
-        while (next_node != nullptr)
-        {
-            Edge *next_edge = next_node->getFirstEdge();
-            while (next_edge != nullptr)
-            {
-                GraphTxt = GraphTxt + to_string(next_node->getId()) + "->" + to_string(next_edge->getTargetId()) + ";" + '\n';
-                next_edge = next_edge->getNextEdge();
-            }
-            next_node = next_node->getNextNode();
-        }
-
-        GraphTxt = GraphTxt + '}';
-
-        return GraphTxt;
-    }
-    return 0;
 }

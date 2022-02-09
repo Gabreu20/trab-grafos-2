@@ -66,4 +66,3 @@ class Node{
 };
 
 #endif // NODE_H_INCLUDED
-

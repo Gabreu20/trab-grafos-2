@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string.h> 
 #include <string>
 #include <math.h>
 #include <utility>
@@ -124,7 +125,10 @@ int menu()
     int selecao;
 
     cout << "============ MENU ============" << endl;
-    cout << "[9] Imprimir Grafo"<< endl;
+    cout << "[1] Algoritimo Guloso" << endl;
+    cout << "[2] Algoritimo Guloso Randomizado"<< endl;
+    cout << "[3] Algoritimo Guloso Randomizado Reativo"<< endl;
+    cout << "[4] Imprimir Grafo"<< endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -145,55 +149,98 @@ int selecionar(int selecao, Graph* graph, string output)
         output_file.close();
         return 0;
     }
-    case 6:
-<<<<<<< HEAD
-        {
+    case 1:
+        {            
+            graph->drawGraph(0);
 
+            //============ ESCRITA ============
+            string nome = "output";
+            string order = to_string(graph->getOrder());
+            string type = ".txt";
+            string arqTxt = nome + order + type;
+            ofstream saida(arqTxt);
+            saida << order;
+            break;
+        }
+    case 2:
+        {
+            string nome = "output";
+            string order = to_string(graph->getOrder());
+            string type = ".txt";
+            string arqTxt = nome + order + type;
+
+
+            srand (time(NULL));
+            int menor = 999999999;
+            for(int i = 0; i < 30; i++){
+                if(i % 1000 == 0)
+                    cout << i << endl;
+                graph->drawGraph(0.1);
+                if(graph->somaCores() < menor){
+                    menor = graph->somaCores();
+                    graph->Saida(arqTxt);
+                }
+                graph->apaga();
+            }     
+            for(int i = 0; i < 30; i++){
+                if(i % 1000 == 0)
+                    cout << i << endl;
+                graph->drawGraph(0.2);
+                if(graph->somaCores() < menor){
+                    menor = graph->somaCores();
+                    graph->Saida(arqTxt);
+                }
+                graph->apaga();
+            }     
+            for(int i = 0; i < 30; i++){
+                if(i % 1000 == 0)
+                    cout << i << endl;
+                graph->drawGraph(0.3);
+                if(graph->somaCores() < menor){
+                    menor = graph->somaCores();
+                    graph->Saida(arqTxt);
+                }
+                graph->apaga();
+            }           
 
             break;
         }
-    case 7:
-        {
-            graph->somaCores();
-            break;
-        }
-=======
-    {
-        graph->somaCores();
-        
-        break;
-    }
-    case 7:
-    {
-        graph->integridade();
-        
-        break;
-    }
->>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
-    case 8:
+    case 3:
     {
         high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        float alphas[10];
+        for(int i = 0; i < 10; i++){
+            if(i == 0)
+                alphas[i] = 0.05;
+            else
+                alphas[i] = alphas[i] + 0.05;
+        }
+        float medias[10];
+        int menores[10];
 
-
-
-        float alpha=0;
-        for(int i=0;i<20000;i++)
-        {
-            graph->drawGraph(alpha);
-            graph->apaga();
+        for(int i = 0; i < 120; i++){
+            if(i % 100 == 0){
+                //atualiza probabilidade
+            }
+            else{
+                graph->randReativo(alphas, 0);
+            }
         }
 
-
-
+        //============= TEMPORIZADOR =============
         high_resolution_clock::time_point fim = high_resolution_clock::now();
         double tempo = duration_cast<duration<double>>(fim - inicio).count();
-
         cout << endl <<  tempo << endl;
         break;
     }
-    case 9:
+    case 4:
     {
         graph->imprimir();
+        break;
+    }
+    case 5:
+    {
+        graph->somaCores();
         break;
     }
     default:

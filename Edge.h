@@ -38,4 +38,3 @@ class Edge{
 };
 
 #endif // EDGE_H_INCLUDED
-
