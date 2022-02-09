@@ -146,6 +146,7 @@ int selecionar(int selecao, Graph* graph, string output)
         return 0;
     }
     case 6:
+<<<<<<< HEAD
         {
 
 
@@ -156,6 +157,19 @@ int selecionar(int selecao, Graph* graph, string output)
             graph->somaCores();
             break;
         }
+=======
+    {
+        graph->somaCores();
+        
+        break;
+    }
+    case 7:
+    {
+        graph->integridade();
+        
+        break;
+    }
+>>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
     case 8:
     {
         high_resolution_clock::time_point inicio = high_resolution_clock::now();

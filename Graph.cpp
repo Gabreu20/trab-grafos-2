@@ -556,14 +556,49 @@ void Graph::integridade(){
     int x = this->activeColor ;
     int* a = new int[x];
 
+<<<<<<< HEAD
     for(int i=0;i<activeColor;i++)
     {
         a[i]=0;
     }
+=======
+void Graph::AttCandList(Node *n)
+{
+    Edge *e = n->getFirstEdge();
+    bool podeInserir = true;
+    while (e != nullptr)
+    {
+        if (getNode(e->getTargetId())->color != 0)
+            podeInserir = false;
+        for (int i = 0; i < quantidade; i++){
+                if (e->getTargetId() == this->candidatos[i])
+                {
+                    podeInserir = false;
+                    break;
+                }
+            }
+
+
+
+        if (podeInserir)
+        {
+            this->candidatos[quantidade] = e->getTargetId();
+            quantidade++;
+        }
+        podeInserir = true;
+        e = e->getNextEdge();
+    }
+}
+
+void Graph::integridade(){
+    int x = this->activeColor - 1;
+    int* a = new int[x];
+>>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
 
     if (this->first_node != nullptr)
     {
         Node *next_node = this->first_node;
+<<<<<<< HEAD
 
         while (next_node != nullptr)
         {
@@ -574,6 +609,57 @@ void Graph::integridade(){
     for(int i = 0; i < x; i++){
         cout << a[i] << endl;
     }
+=======
+
+        while (next_node != nullptr)
+        {
+            a[(next_node->color) - 1]++;
+            next_node = next_node->getNextNode();
+        }
+    }
+    for(int i = 0; i < x; i++){
+        cout << a[i] << endl;
+    }
+}
+
+void Graph::somaCores(){
+    cout << endl << activeColor;
+    int *maiores = new int[activeColor];
+    int *menores = new int[activeColor];
+
+    for(int i=0;i<activeColor;i++)
+    {
+        maiores[i]=-1;
+        menores[i]=-1;
+    }
+
+
+    Node *nextNode=first_node;
+
+    while(nextNode!=nullptr){
+        int CorNo=nextNode->color-1;
+
+        if(maiores[CorNo]==-1)
+            maiores[CorNo]=nextNode->peso;
+        if(menores[CorNo]==-1)
+            menores[CorNo]=nextNode->peso;
+
+        if(nextNode->peso > maiores[CorNo])
+            maiores[CorNo]=nextNode->peso;
+        if(nextNode->peso < menores[CorNo])
+            menores[CorNo]=nextNode->peso;
+
+        nextNode=nextNode->getNextNode();
+    }
+
+    int subtotal=0;
+
+    for(int i=0;i<activeColor;i++)
+    {
+        subtotal=subtotal+maiores[i]-menores[i];
+    }
+    cout << subtotal << " !!" << endl;
+>>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
 }
 
 string Graph::Saida()

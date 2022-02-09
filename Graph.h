@@ -59,8 +59,15 @@ class Graph{
         //gap calculus
         void drawGraph(Node *n,float alpha);
         void AttCandList(Node *n);
+<<<<<<< HEAD
         void drawGraph(float alpha);
         void somaCores();
+=======
+        void drawGraph();
+        void integridade();
+        void somaCores();
+
+>>>>>>> d47257a420539f6e36bdd0b57cbca73fd3f23a66
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
         string Saida();
