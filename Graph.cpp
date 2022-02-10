@@ -141,6 +141,7 @@ void Graph::imprimir()
             next_node = next_node->getNextNode();
         }
     }
+
 }
 
 void Graph::imprimirAdjacencia()
@@ -390,23 +391,49 @@ void Graph::ordena(int tamanho,Node *num[]){
 
 void Graph::drawGraph(float alpha)
 {
+    sobrando=order;
+    clustersLivres=clusters;
     Node *nextNode=this->getFirstNode();
     while(nextNode!=nullptr){
-        if(nextNode->color==0)
-            drawGraph(nextNode,alpha);
+        if(nextNode->color==0){
+            int x = drawGraph(nextNode,alpha);
+        }
         nextNode=nextNode->getNextNode();
     }
 }
 
 
 // gap calculus
-void Graph::drawGraph(Node *n,float alpha)
+int Graph::drawGraph(Node *n,float alpha)
 {
+    bool achado = false;
+    if(clustersLivres == 0){       
+        Edge *e = n->getFirstEdge(); 
+        while(e != nullptr){
+            if(getNode(e->getTargetId())->color != 0){
+                n->color = getNode(e->getTargetId())->color;
+                achado = true;
+                return n->color;
+            }
+            else
+                e = e->getNextEdge();
+        }
+        if(!achado){
+            int sorteado = n->in_degree + n->out_degree;
+            sorteado = rand() % sorteado;
+            e = n->getFirstEdge();
+            cout << "HELLO" << endl;
+            for(int i = 0; i < sorteado; i++){
+                e = e->getNextEdge();
+            }
+            n->color = drawGraph(getNode(e->getTargetId()),alpha);
+            return n->color;
+        }
+    }
     quantidade=0;
     // colore o primeiro node
     this->activeColor++;
     n->color = activeColor;
-
     // Inicia a lista de candidatos
     AttCandList(n);
 
@@ -415,8 +442,9 @@ void Graph::drawGraph(Node *n,float alpha)
         Edge *aux=n->getFirstEdge();
         Node *aux2=getNode(aux->getTargetId());
         n->color=aux2->color;
-        return;
+        return 0;
     }
+    sobrando--;
 
     // inicializa o maior e o menor como o primeiro node
     int menor = n->peso;
@@ -424,7 +452,7 @@ void Graph::drawGraph(Node *n,float alpha)
 
     //================ loop ================
     int escolhido = 0;
-    int indexEscolhido = 0;
+    int tamanhoCluster =1;
 
     int primeiroGap=1;
     int valorPrimeiroGap=0;
@@ -470,7 +498,12 @@ void Graph::drawGraph(Node *n,float alpha)
             valorPrimeiroGap=candidatos[0]->diferenca;
             primeiroGap=0;
         }
-        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap/2){
+        else if(candidatos[0]->diferenca>valorPrimeiroGap+valorPrimeiroGap + 8 && clustersLivres > 0){
+                clustersLivres--;
+            break;
+        }
+        else if(tamanhoCluster>order/(clusters) && clustersLivres>0  || sobrando<(clustersLivres+1)* 2 && clustersLivres > 0){
+                clustersLivres--;
             break;
         }
 
@@ -478,17 +511,20 @@ void Graph::drawGraph(Node *n,float alpha)
         AttCandList(candidatos[escolhido]);
 
         removeDoVetor(candidatos,candidatos[escolhido]->getId());
-
+        tamanhoCluster++;
+        sobrando--;
 
         if(quantidade<=0){
+                clustersLivres--;
             break;
         }
 
     }
 
     if(quantidade>0){
-        drawGraph(candidatos[0],alpha);
+        drawGraph(candidatos[quantidade-1],alpha);
     }
+    return 0;
 }
 
 void Graph::AttCandList(Node *n)
@@ -560,7 +596,8 @@ int Graph::somaCores(){
 
     return subtotal;
 }
-void Graph::integridade(){
+
+string Graph::integridade(){
     int x = this->activeColor ;
     int* a = new int[x];
 
@@ -579,9 +616,12 @@ void Graph::integridade(){
             next_node = next_node->getNextNode();
         }
     }
+    string saida;
     for(int i = 0; i < x; i++){
-        cout << a[i] << endl;
+        saida = saida + "cor " + std::to_string(i + 1) +": ";
+        saida = saida + std::to_string(a[i]) + " nodes\n"; 
     }
+    return saida;
 }
 
 void Graph::randReativo(float alphas[], float probabilidade[]){
@@ -705,29 +745,24 @@ void Graph::auxRandReativo(Node *n, float alphas[], float probabilidade[]){
 }
 
 
-void Graph::Saida(string saida){
-    ofstream sair(saida);
+string Graph::Saida(){
+    string sair;
     if (this->first_node != nullptr)
     {
         Node *next_node = this->first_node;
 
         while (next_node != nullptr)
         {
-            sair << "COR: " << next_node->color << " ";
-            sair << next_node->getId();
-            sair << "-" << next_node->peso;
+            sair = sair + "COR: " + to_string(next_node->color) +  " ";
+            sair = sair + to_string(next_node->getId());
+            sair = sair + "-" + to_string(next_node->peso);
             Edge *next_edge = next_node->getFirstEdge();
 
-            while (next_edge != nullptr)
-            {
-                sair << " -> " << next_edge->getTargetId();
-                next_edge = next_edge->getNextEdge();
-            }
-
-            sair << endl;
+            sair = sair + "\n";
 
             next_node = next_node->getNextNode();
         }
     }
 
+    return sair;
 }

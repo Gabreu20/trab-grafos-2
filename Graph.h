@@ -25,7 +25,7 @@ class Graph{
         Node* last_node;
         Edge* first_edge;
         int activeColor = 0;
-
+        
         Node* candidatos[1000];
         int quantidade=0;
         int adjAux = 0;
@@ -57,21 +57,26 @@ class Graph{
         void apaga();
 
         //gap calculus
-        void drawGraph(Node *n,float alpha);
+        int drawGraph(Node *n,float alpha);
         void AttCandList(Node *n);
         void drawGraph(float alpha);
         int somaCores();
         void imprimir();//imprime um grafo
         void imprimirAdjacencia();
-        void Saida(string saida);
+        string Saida();
         void randReativo(float alphas[], float probabilidade[]);
         void auxRandReativo(Node *n, float alphas[], float probabilidade[]);
+
+        string integridade();
+        
+        int clusters;
+        int clustersLivres;
+        int sobrando;
 
     private:
         void ordena(int tamanho,Node *num[]);
         void removeDoVetor(Node *vetor[],int id);
-        void addNode(Node *Id);
-        void integridade();
+        void addNode(Node *Id);        
 
         //Auxiliar methods
 
